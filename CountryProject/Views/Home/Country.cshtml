@@ -1,0 +1,150 @@
+﻿@model List<CountryModel>
+@{
+    ViewData["Title"] = "Countries";
+    var index = 1;
+}
+<br />
+
+
+<div class="container">
+
+    <div id="countryList">
+        <h2>List Of Countries</h2>
+
+        <div class="table-responsive tableBox">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Capital</th>
+                        <th>Region</th>
+                        <th>Population</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td>@item.Name.Common</td>
+                            <td>@item.Capital?[0]</td>
+                            <td>@item.Region</td>
+                            <td>@item.Population</td>
+                            <td>
+                                <button onclick="getDetails(@item.Id)" class="btn btn-primary">View</button>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div id="countryDetails">
+
+        <div>
+            <h2>Country Details</h2>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Common Name</label>
+                    <p id="commonName"></p>
+                </div>
+                <div class="col-md-6">
+                    <label>Official Name</label>
+                    <p id="officialName"></p>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Capital</label>
+                    <p id="capital"></p>
+                </div>
+                <div class="col-md-6">
+                    <label>Continent</label>
+                    <p id="continent"></p>
+                </div>
+                <div class="col-md-6">
+                    <label>Population</label>
+                    <p id="population"></p>
+                </div>
+                <div class="col-md-6">
+                    <label>Sub-Region</label>
+                    <p id="subRegion"></p>
+                </div>
+                <hr />
+                <h3>Neighbouring Countries</h3>
+                <div class="col-md-12">
+                    <div class="table-responsive tableBox">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Capital</th>
+                                    <th>Region</th>
+                                    <th>Population</th>
+                                </tr>
+                            </thead>
+                            <tbody id="neighbourTable">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div>
+            <button onclick="back()" class="btn btn-primary">Back To List</button>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script>
+        $('#countryDetails').hide();
+
+        function back() {
+            $('#countryDetails').hide();
+            $('#countryList').show();
+        }
+
+        function getDetails(id) {
+            fetch('/api/country/' + id, {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(result => {
+
+                    $('#neighbourTable').empty();
+
+                    var capital = "N/A"
+                    if (result.data.capital !== null) capital = result.data.capital[0];
+
+                    $('#commonName').text(result.data.name.common)
+                    $('#officialName').text(result.data.name.official)
+                    $('#capital').text(capital)
+                    $('#continent').text(result.data.continents[0])
+                    $('#population').text(result.data.population)
+                    $('#subRegion').text(result.data.subregion)
+
+                    $.each(result.data.neighbors, function (i,e) {
+                       var val = $(`<tr> <td>${i + 1}</td> <td>${e.name.common}</td> <td>${e.capital[0]}</td> <td>${e.region}</td> <td>${e.population}</td> </tr>`)
+                       $('#neighbourTable').append(val);
+                    });
+
+                    $('#countryDetails').show();
+                    $('#countryList').hide();
+
+                }).catch(error => {
+                    alert(error);
+                });
+        }
+    </script>
+}
