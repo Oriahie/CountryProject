@@ -47,33 +47,46 @@
     <div id="countryDetails">
 
         <div>
-            <h2>Country Details</h2>
+            <div class="row">
+                <h2 class="col-md-9">Country Details</h2>
+                <select onchange="changeLanguage()" id="select" class="col-md-4 pull-right form-select form-control">
+                    <option selected disabled>Select Language</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="German">German</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="Italian">Italian</option>
+                    <option value="French">French</option>
+                </select>
+            </div>
+
             <hr />
             <div class="row">
                 <div class="col-md-6">
                     <label>Common Name</label>
-                    <p id="commonName"></p>
+                    <p class="font-weight-bold" id="commonName"></p>
+                    <p class="font-weight-bold" id="langName"></p>
                 </div>
                 <div class="col-md-6">
                     <label>Official Name</label>
-                    <p id="officialName"></p>
+                    <p class="font-weight-bold" id="officialName"></p>
+                    <p class="font-weight-bold" id="langOffName"></p>
                 </div>
 
                 <div class="col-md-6">
                     <label>Capital</label>
-                    <p id="capital"></p>
+                    <p class="font-weight-bold" id="capital"></p>
                 </div>
                 <div class="col-md-6">
                     <label>Continent</label>
-                    <p id="continent"></p>
+                    <p class="font-weight-bold" id="continent"></p>
                 </div>
                 <div class="col-md-6">
                     <label>Population</label>
-                    <p id="population"></p>
+                    <p class="font-weight-bold" id="population"></p>
                 </div>
                 <div class="col-md-6">
                     <label>Sub-Region</label>
-                    <p id="subRegion"></p>
+                    <p class="font-weight-bold" id="subRegion"></p>
                 </div>
                 <hr />
                 <h3>Neighbouring Countries</h3>
@@ -90,7 +103,6 @@
                                 </tr>
                             </thead>
                             <tbody id="neighbourTable">
-
                             </tbody>
                         </table>
                     </div>
@@ -109,6 +121,37 @@
 @section scripts{
     <script>
         $('#countryDetails').hide();
+
+        var translations = {};
+
+        
+
+        function changeLanguage() {
+            var language  = $('#select').val();
+            var chosenLang;
+            switch (language) {
+                case "Japanese":
+                    chosenLang = translations.jpn;
+                    break;
+                case "German":
+                    chosenLang = translations.deu;
+                    break;
+                case "Spanish":
+                    chosenLang = translations.spa;
+                    break;
+                case "Italian":
+                    chosenLang = translations.ita;
+                    break;
+                case "French":
+                    chosenLang = translations.fra;
+                    break;
+                default:
+            }
+
+            $('#langName').text('(' + chosenLang.common + ')')
+            $('#langOffName').text('(' + chosenLang.official + ')')
+        }
+
 
         function back() {
             $('#countryDetails').hide();
@@ -134,9 +177,11 @@
                     $('#population').text(result.data.population)
                     $('#subRegion').text(result.data.subregion)
 
-                    $.each(result.data.neighbors, function (i,e) {
-                       var val = $(`<tr> <td>${i + 1}</td> <td>${e.name.common}</td> <td>${e.capital[0]}</td> <td>${e.region}</td> <td>${e.population}</td> </tr>`)
-                       $('#neighbourTable').append(val);
+                    translations = result.data.translations;
+
+                    $.each(result.data.neighbors, function (i, e) {
+                        var val = $(`<tr> <td>${i + 1}</td> <td>${e.name.common}</td> <td>${e.capital[0]}</td> <td>${e.region}</td> <td>${e.population}</td> </tr>`)
+                        $('#neighbourTable').append(val);
                     });
 
                     $('#countryDetails').show();
