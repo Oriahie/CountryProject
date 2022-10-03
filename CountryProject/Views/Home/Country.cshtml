@@ -9,7 +9,7 @@
 <div class="container">
 
     <div id="countryList">
-        <h2>List Of Countries</h2>
+        <h2 id="countryListName">List Of Countries</h2>
 
         <div class="table-responsive tableBox">
             <table class="table">
@@ -48,7 +48,7 @@
 
         <div>
             <div class="row">
-                <h2 class="col-md-9">Country Details</h2>
+                <h2 class="col-md-9" id="countryDetailsName">Country Details</h2>
                 <select onchange="changeLanguage()" id="select" class="col-md-4 pull-right form-select form-control">
                     <option selected disabled>Select Language</option>
                     <option value="Japanese">Japanese</option>
@@ -89,7 +89,7 @@
                     <p class="font-weight-bold" id="subRegion"></p>
                 </div>
                 <hr />
-                <h3>Neighbouring Countries</h3>
+                <h3 id="neighboringCountryName">Neighbouring Countries</h3>
                 <div class="col-md-12">
                     <div class="table-responsive tableBox">
                         <table class="table">

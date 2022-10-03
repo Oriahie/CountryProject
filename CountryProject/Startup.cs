@@ -4,6 +4,7 @@ using CountryProject.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace CountryProject
@@ -27,15 +29,14 @@ namespace CountryProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
             services.AddMemoryCache();
 
             services.AddLogging();
-
+            
             //register services
             services.AddScoped<ICountryService, CountryService>();
             services.AddScoped<IEmailServices, EmailServices>();
-
             services.AddMvc(config =>
             {
                 config.Filters.Add(new GlobalExceptionFilter(services));
@@ -59,6 +60,7 @@ namespace CountryProject
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
 
             app.UseRouting();
 
